@@ -5,13 +5,9 @@
 {% endblock %}
 
 {% block body %}
-<header>
-    <h1 id="header">Welcome to WordSaver!</h1>
-    <small id="description">The best place to save a text word by word!</small>
-</header>
 <main>
     <section>
-        <form>
+        <form action="/Authenticate" method="POST">
             <h2>Login to start!</h2>
             <fieldset>
                 <div class="card-header">Login</div>

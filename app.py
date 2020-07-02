@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, url_for
+from flask import Flask, request, render_template, url_for, redirect
 from flaskext.mysql import MySQL
 
 mysql = MySQL()
@@ -15,22 +15,29 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/Authenticate")
+@app.route("/word-saving")
+def wordsaving():
+    return render_template("saving.html")
+
+
+@app.route("/Authenticate", methods=["POST"])
 def authenticate():
-    username = request.args.get('UserName')
-    password = request.args.get('Password')
+    email = request.form['email']
+    password = request.form['password']
     cursor = mysql.connect().cursor()
+
     cursor.execute(
-        "SELECT * from User where Username='" +
-        username +
-        "' and Password='" +
+        "SELECT * from User where email='" +
+        email +
+        "' and password='" +
         password +
         "'")
     data = cursor.fetchone()
+
     if data is None:
-        return "Username or Password is wrong"
+        return "Email address or Password is wrong"
     else:
-        return "Logged in successfully"
+        return redirect("/word-saving")
 
 
 if __name__ == "__main__":
