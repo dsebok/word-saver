@@ -18,14 +18,26 @@ def index():
 
 
 @app.route("/word-saving")
-def save():
-    if 'loggedin' in session:
-        return render_template(
-            'saving.html', username=session['username'])
-    return redirect("/")
+def savingPage():
+    return authorizedAccess('saving.html')
 
 
-@app.route("/Authenticate", methods=["POST"])
+@app.route("/word-counting")
+def wordCountingPage():
+    return authorizedAccess('word-counting.html')
+
+
+@app.route("/word-table")
+def wordTablePage():
+    return authorizedAccess('word-table.html')
+
+
+@app.route("/rest-api/dump-words")
+def dumpWords():
+    return authorizedAccess('word-table.html')
+
+
+@app.route("/rest-api/authenticate", methods=["POST"])
 def authenticate():
     email = request.form['email']
     password = request.form['password']
@@ -45,6 +57,13 @@ def logout():
     session.pop('id', None)
     session.pop('username', None)
     # Redirect to login page
+    return redirect("/")
+
+
+def authorizedAccess(target):
+    if 'loggedin' in session:
+        return render_template(
+            target, username=session['username'])
     return redirect("/")
 
 
