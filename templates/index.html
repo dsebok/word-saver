@@ -5,5 +5,21 @@
 {% endblock %}
 
 {% block body %}
-<h1>Hello World!:) :o</h1>
+<header>
+    <h1 id="header">Welcome to WordSaver!</h1>
+    <small id="description">The best place to save a text word by word!</small>
+</header>
+<main>
+    <section>
+        <form>
+            <h2>Login to start!</h2>
+            <fieldset>
+                <div class="card-header">Login</div>
+                <input type="email" name="email" id="email" placeholder="Email">
+                <input type="password" name="password" id="password" placeholder="Password">
+                <button id="loginButton" type="submit">Login</button>
+            </fieldset>
+        </form>
+    </section>
+</main>
 {% endblock %}
