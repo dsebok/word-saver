@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block body %}
+<p>Welcome back, {{ username }}!</p>
 <main>
     <section>
         <form action="/" method="POST">
@@ -12,7 +13,8 @@
             <h4>The words will be saved separately</h4>
             <fieldset>
                 <div class="card-header">Save</div>
-                <input type="text" name="input-text" id="input-text" placeholder="Type your text here">
+                <textarea rows="5" cols="80" name="input-text" id="input-text"
+                    placeholder="Type your text here"></textarea>
                 <button type="submit">Save</button>
             </fieldset>
         </form>
