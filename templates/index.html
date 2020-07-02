@@ -1,9 +1,5 @@
 {% extends 'base.html' %}
 
-{% block head %}
-
-{% endblock %}
-
 {% block body %}
 <header>
     <h1 id="header">Welcome to WordSaver!</h1>
@@ -11,7 +7,7 @@
 </header>
 <main>
     <section>
-        <form action="/Authenticate" method="POST">
+        <form action="{{ url_for('authenticate') }}" method="POST">
             <h2>Login to start!</h2>
             <fieldset>
                 <div class="card-header">Login</div>

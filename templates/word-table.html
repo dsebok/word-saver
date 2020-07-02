@@ -1,0 +1,26 @@
+{% extends 'base-loggedin.html' %}
+
+{% block body %}
+<main>
+    <section>
+        <form action="{{ url_for('dumpWords') }}" method="POST">
+            <h2>These are all the words that are contained in the database!</h2>
+            <h4>Hit refresh if the database has been changed</h4>
+            <fieldset>
+                <div class="card-header">Word table</div>
+                <table>
+                    <tr>
+                        <td>
+                            <label>word</label>
+                        </td>
+                        <td>
+                            <label> - wordcount:</label>
+                        </td>
+                    </tr>
+                </table>
+                <button type="submit">Refresh</button>
+            </fieldset>
+        </form>
+    </section>
+</main>
+{% endblock %}

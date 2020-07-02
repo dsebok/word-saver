@@ -144,6 +144,7 @@ fieldset {
 
 table {
 	clear: both;
+	padding: 10px;
 }
 
 /******************* FORM *******************/

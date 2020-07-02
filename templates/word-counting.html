@@ -1,0 +1,27 @@
+{% extends 'base-loggedin.html' %}
+
+{% block body %}
+<main>
+    <section>
+        <form action="/" method="POST">
+            <h2>Count your word!</h2>
+            <h4>Check how many times your word is contained in the database</h4>
+            <fieldset>
+                <div class="card-header">Count</div>
+                <input type="text" name="text" id="text" placeholder="Type your word here">
+                <table>
+                    <tr>
+                        <td>
+                            <label>Word count:</label>
+                        </td>
+                        <td>
+                            <label>{{ wordcount }}</label>
+                        </td>
+                    </tr>
+                </table>
+                <button type="submit">Count</button>
+            </fieldset>
+        </form>
+    </section>
+</main>
+{% endblock %}

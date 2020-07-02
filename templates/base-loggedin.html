@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block nav %}
+<header>
+    <div id="nav-and-logout">
+        <nav>
+            <a id="header" href="{{ url_for('savingPage') }}">WordSaver</a>
+            <ul id="nav-list">
+                <li>
+                    <p>Welcome back, {{ username }}!</p>
+                </li>
+                <li>
+                    <a href="{{ url_for('savingPage') }}">Save</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('wordCountingPage') }}">Find&Count</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('dumpWords') }}">Show me what you got!</a>
+                </li>
+            </ul>
+        </nav>
+        <form action="{{ url_for('logout') }}" method="GET">
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+</header>
+{% endblock %}
