@@ -3,24 +3,29 @@
 {% block body %}
 <main>
     <section>
-        <form action="{{ url_for('dumpWords') }}" method="GET">
+        <form action="{{ url_for('wordTablePage') }}" method="GET">
             <h2>These are all the words that are contained in the database!</h2>
             <h4>Hit refresh if the database has been changed</h4>
             <fieldset>
                 <div class="card-header">Word table</div>
+                {% if wordtable|length < 1 %}
+                <div class="message">
+                    <h4>There are no words in the database yet</h4>
+                </div>
+                {% else %}
                 <table>
                     <tr>
-                        <td>
-                            <label>word</label>
-                        </td>
-                        <td>
-                            <label> - wordcount:</label>
-                        </td>
-                        <td>
-                            <label>{{ quantity }}</label>
-                        </td>
+                        <th>Word</th>
+                        <th>Quantity</th>
                     </tr>
+                    {% for word in wordtable %}
+                    <tr>
+                        <td><label>{{ word[0] }}</label></td>
+                        <td><label>{{ word[1] }}</label></td>
+                    </tr>
+                    {% endfor %}
                 </table>
+                {% endif %}
                 <button type="submit">Refresh</button>
             </fieldset>
         </form>

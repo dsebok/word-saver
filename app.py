@@ -44,12 +44,10 @@ def countWord():
 
 @app.route("/word-table")
 def wordTablePage():
-    return authorizedAccess('word-table.html')
-
-
-@app.route("/rest-api/dump-words")
-def dumpWords():
-    return authorizedRedirect("/word-table")
+    if 'loggedin' in session:
+        wordtable = getWordTable()
+        return render_template('word-table.html', wordtable=wordtable)
+    return redirect("/")
 
 
 @app.route("/rest-api/authenticate", methods=["POST"])
@@ -81,13 +79,6 @@ def authorizedAccess(target):
     return redirect("/")
 
 
-def authorizedRedirect(target):
-    if 'loggedin' in session:
-        # do stuff
-        return redirect(target)
-    return redirect("/")
-
-
 def authorizedAccess(target):
     if 'loggedin' in session:
         return render_template(
@@ -106,12 +97,20 @@ def findMatchingCredentials(email, password):
 
 def getWordCount(word):
     cursor = mysql.connect().cursor()
-    cursor.execute("SELECT quantity FROM word WHERE word=%s", (word))
+    cursor.execute(
+        "SELECT quantity FROM word WHERE content=%s",
+        (word))
     quantity = cursor.fetchone()
     if quantity:
         return quantity[0]
     else:
         return 0
+
+
+def getWordTable():
+    cursor = mysql.connect().cursor()
+    cursor.execute("SELECT content, quantity FROM word")
+    return cursor.fetchall()
 
 
 if __name__ == "__main__":
