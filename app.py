@@ -1,15 +1,9 @@
 from flask import Flask, request, render_template, url_for, redirect, session
-from flaskext.mysql import MySQL
+from service import word_service, account_service
 
-mysql = MySQL()
+
 app = Flask(__name__)
 app.secret_key = 'qfV0ekN^e&r8!7PR'
-
-app.config['MYSQL_DATABASE_USER'] = 'David'
-app.config['MYSQL_DATABASE_PASSWORD'] = '20ential'
-app.config['MYSQL_DATABASE_DB'] = 'WordSaver'
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-mysql.init_app(app)
 
 
 @app.route("/")
@@ -36,7 +30,7 @@ def countWord():
         word = request.form['word']
         if word == "":
             word = " "
-        quantity = getWordCount(word)
+        quantity = word_service.getWordCount(word)
         return redirect(
             url_for("wordCountingPage", word=word, quantity=quantity))
     return redirect("/")
@@ -45,7 +39,7 @@ def countWord():
 @app.route("/word-table")
 def wordTablePage():
     if 'loggedin' in session:
-        wordtable = getWordTable()
+        wordtable = word_service.getWordTable()
         return render_template('word-table.html', wordtable=wordtable)
     return redirect("/")
 
@@ -54,11 +48,9 @@ def wordTablePage():
 def authenticate():
     email = request.form['email']
     password = request.form['password']
-    account = findMatchingCredentials(email, password)
+    account = account_service.findMatchingCredentials(email, password)
     if account:
-        session['loggedin'] = True
-        session['id'] = account[0]
-        session['username'] = account[1]
+        createSession(account)
         return redirect("/word-saving")
     else:
         return "Email address or Password is incorrect!"
@@ -79,38 +71,10 @@ def authorizedAccess(target):
     return redirect("/")
 
 
-def authorizedAccess(target):
-    if 'loggedin' in session:
-        return render_template(
-            target, username=session['username'])
-    return redirect("/")
-
-
-def findMatchingCredentials(email, password):
-    cursor = mysql.connect().cursor()
-    cursor.execute(
-        "SELECT * from User where email=%s and password=%s",
-        (email,
-         password))
-    return cursor.fetchone()
-
-
-def getWordCount(word):
-    cursor = mysql.connect().cursor()
-    cursor.execute(
-        "SELECT quantity FROM word WHERE content=%s",
-        (word))
-    quantity = cursor.fetchone()
-    if quantity:
-        return quantity[0]
-    else:
-        return 0
-
-
-def getWordTable():
-    cursor = mysql.connect().cursor()
-    cursor.execute("SELECT content, quantity FROM word")
-    return cursor.fetchall()
+def createSession(account):
+    session['loggedin'] = True
+    session['id'] = account[0]
+    session['username'] = account[1]
 
 
 if __name__ == "__main__":
