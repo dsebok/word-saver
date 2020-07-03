@@ -3,7 +3,7 @@
 {% block body %}
 <main>
     <section>
-        <form action="{{ url_for('dumpWords') }}" method="POST">
+        <form action="{{ url_for('dumpWords') }}" method="GET">
             <h2>These are all the words that are contained in the database!</h2>
             <h4>Hit refresh if the database has been changed</h4>
             <fieldset>
@@ -15,6 +15,9 @@
                         </td>
                         <td>
                             <label> - wordcount:</label>
+                        </td>
+                        <td>
+                            <label>{{ quantity }}</label>
                         </td>
                     </tr>
                 </table>

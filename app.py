@@ -3,7 +3,7 @@ from flaskext.mysql import MySQL
 
 mysql = MySQL()
 app = Flask(__name__)
-app.secret_key = 'JahIthBer2000'
+app.secret_key = 'qfV0ekN^e&r8!7PR'
 
 app.config['MYSQL_DATABASE_USER'] = 'David'
 app.config['MYSQL_DATABASE_PASSWORD'] = '20ential'
@@ -22,9 +22,24 @@ def savingPage():
     return authorizedAccess('saving.html')
 
 
-@app.route("/word-counting")
-def wordCountingPage():
-    return authorizedAccess('word-counting.html')
+@app.route("/word-counting/<word>/<quantity>")
+def wordCountingPage(word, quantity):
+    if 'loggedin' in session:
+        return render_template(
+            'word-counting.html', username=session['username'], prevWord=word, wordCount=quantity)
+    return redirect("/")
+
+
+@app.route("/rest-api/count-word", methods=["POST"])
+def countWord():
+    if 'loggedin' in session:
+        word = request.form['word']
+        if word == "":
+            word = " "
+        quantity = getWordCount(word)
+        return redirect(
+            url_for("wordCountingPage", word=word, quantity=quantity))
+    return redirect("/")
 
 
 @app.route("/word-table")
@@ -34,7 +49,7 @@ def wordTablePage():
 
 @app.route("/rest-api/dump-words")
 def dumpWords():
-    return authorizedAccess('word-table.html')
+    return authorizedRedirect("/word-table")
 
 
 @app.route("/rest-api/authenticate", methods=["POST"])
@@ -56,7 +71,6 @@ def logout():
     session.pop('loggedin', None)
     session.pop('id', None)
     session.pop('username', None)
-    # Redirect to login page
     return redirect("/")
 
 
@@ -67,6 +81,13 @@ def authorizedAccess(target):
     return redirect("/")
 
 
+def authorizedRedirect(target):
+    if 'loggedin' in session:
+        # do stuff
+        return redirect(target)
+    return redirect("/")
+
+
 def findMatchingCredentials(email, password):
     cursor = mysql.connect().cursor()
     cursor.execute(
@@ -74,6 +95,16 @@ def findMatchingCredentials(email, password):
         (email,
          password))
     return cursor.fetchone()
+
+
+def getWordCount(word):
+    cursor = mysql.connect().cursor()
+    cursor.execute("SELECT quantity FROM word WHERE word=%s", (word))
+    quantity = cursor.fetchone()
+    if quantity:
+        return quantity[0]
+    else:
+        return 0
 
 
 if __name__ == "__main__":
