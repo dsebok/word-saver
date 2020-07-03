@@ -88,6 +88,13 @@ def authorizedRedirect(target):
     return redirect("/")
 
 
+def authorizedAccess(target):
+    if 'loggedin' in session:
+        return render_template(
+            target, username=session['username'])
+    return redirect("/")
+
+
 def findMatchingCredentials(email, password):
     cursor = mysql.connect().cursor()
     cursor.execute(
