@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template, url_for, redirect, session
-from service import word_service, account_service
+from service import account_service, word_service
 
 
 app = Flask(__name__)
@@ -23,7 +23,7 @@ def savingPage():
 def saveWords():
     if 'loggedin' in session:
         text = request.form['text']
-        if word_service.textIsNotAlphabetical(text):
+        if word_service.textHasInvalidCharacters(text):
             session['text'] = text
             return redirect(url_for("savingPage"))
             # add error msg
@@ -57,7 +57,8 @@ def countWord():
 def wordTablePage():
     if 'loggedin' in session:
         wordtable = word_service.getWordTable()
-        return render_template('word-table.html', wordtable=wordtable)
+        return render_template(
+            'word-table.html', username=session['username'], wordtable=wordtable)
     return redirect("/")
 
 

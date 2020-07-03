@@ -9,12 +9,11 @@ def getWordCount(word):
     else:
         return 0
 
-
 def getWordTable():
     return mysql_dao.getWordTable()
 
-
-def textIsNotAlphabetical(text):
-    text = text.replace(" ", "")
-    text = re.sub(r"[-:()?!,.\d]", "", text)
+def textHasInvalidCharacters(text):
+    if text.strip()=="":
+        return True
+    text = re.sub(r"[ -:()?!,.\d]", "a", text)
     return not text.isalpha()
