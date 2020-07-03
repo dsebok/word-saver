@@ -1,4 +1,5 @@
 from dao import mysql_dao
+import re
 
 
 def getWordCount(word):
@@ -11,3 +12,9 @@ def getWordCount(word):
 
 def getWordTable():
     return mysql_dao.getWordTable()
+
+
+def textIsNotAlphabetical(text):
+    text = text.replace(" ", "")
+    text = re.sub(r"[-:()?!,.\d]", "", text)
+    return not text.isalpha()

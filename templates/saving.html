@@ -3,13 +3,14 @@
 {% block body %}
 <main>
     <section>
-        <form action="/" method="POST">
+        <form action="{{ url_for('saveWords') }}" method="POST">
             <h2>Save your whole text!</h2>
             <h4>The words will be saved separately</h4>
+            <h4>Acceptable characters are: letters, digits and these punctuation marks -:()?!,.</h4>
             <fieldset>
                 <div class="card-header">Save</div>
-                <textarea rows="5" cols="80" name="input-text" id="input-text"
-                    placeholder="Type your text here"></textarea>
+                <textarea rows="5" cols="80" name="text" id="text"
+                    placeholder="Type your text here">{{ text }}</textarea>
                 <button type="submit">Save</button>
             </fieldset>
         </form>

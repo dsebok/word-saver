@@ -13,7 +13,23 @@ def index():
 
 @app.route("/word-saving")
 def savingPage():
-    return authorizedAccess('saving.html')
+    if 'loggedin' in session:
+        return render_template(
+            'saving.html', username=session['username'], text=session['text'])
+    return redirect("/")
+
+
+@app.route("/rest-api/save-words", methods=["POST"])
+def saveWords():
+    if 'loggedin' in session:
+        text = request.form['text']
+        if word_service.textIsNotAlphabetical(text):
+            session['text'] = text
+            return redirect(url_for("savingPage"))
+            # add error msg
+        session['text'] = ""
+        return redirect(url_for("savingPage"))
+    return redirect("/")
 
 
 @app.route("/word-counting/<word>/<quantity>")
@@ -30,6 +46,7 @@ def countWord():
         word = request.form['word']
         if word == "":
             word = " "
+            # redirect banner for typing in sg
         quantity = word_service.getWordCount(word)
         return redirect(
             url_for("wordCountingPage", word=word, quantity=quantity))
@@ -61,20 +78,24 @@ def logout():
     session.pop('loggedin', None)
     session.pop('id', None)
     session.pop('username', None)
+    session.pop('text', None)
     return redirect("/")
 
 
+'''
 def authorizedAccess(target):
     if 'loggedin' in session:
         return render_template(
             target, username=session['username'])
     return redirect("/")
+'''
 
 
 def createSession(account):
     session['loggedin'] = True
     session['id'] = account[0]
     session['username'] = account[1]
+    session['text'] = ""
 
 
 if __name__ == "__main__":
