@@ -34,4 +34,22 @@ def getWordCount(word):
 
 
 def updateWordTable(wordList):
-    return 0
+    query = createQuery(wordList)
+    db = mysql.connect()
+    cursor = db.cursor()
+    cursor.execute(query)
+    db.commit()
+
+
+def createQuery(wordList):
+    start = "INSERT INTO word (id, content, quantity) VALUES"
+    mid = flattenToString(wordList)
+    query = start + mid + " ON DUPLICATE KEY UPDATE quantity=VALUES(quantity)"
+    return query
+
+
+def flattenToString(wordList):
+    midQuery = ""
+    for word in wordList:
+        midQuery += " (" + str(word[0]) + ", '" + word[1] + "', " + str(word[2]) + "),"
+    return midQuery[:-1]

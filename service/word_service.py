@@ -48,6 +48,8 @@ def selectExistingWords(wordTable, dbTable):
     updateTable = WordTable()
     for word in wordTable.table:
         if dbTable.containsWord(word):
-            word.quantity += dbTable.getQuantity(word)
+            dbWord = dbTable.getWord(word.content)
+            word.quantity += dbWord.quantity
+            word.id = dbWord.id
             updateTable.add(word)
     return updateTable

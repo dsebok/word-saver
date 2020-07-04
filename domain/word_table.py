@@ -20,8 +20,8 @@ class WordTable:
             if externalWord.content.casefold() == word.content.casefold():
                 word.increaseQuantity()
 
-    def getQuantity(self, externalWord):
+    def getWord(self, content):
         for word in self.table:
-            if externalWord.content.casefold() == word.content.casefold():
-                return word.quantity
-        return 0
+            if content.casefold() == word.content.casefold():
+                return word
+        return Word()
