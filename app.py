@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, url_for, redirect, session
+from flask import Flask, request, render_template, url_for, redirect, session, flash
 from service import account_service, word_service
 
 
@@ -25,12 +25,12 @@ def saveWords():
         text = request.form['text']
         if word_service.textHasInvalidCharacters(text):
             session['text'] = text
+            flash("Error: text had invalid characters!", "error")
             return redirect(url_for("savingPage"))
-            # add error msg
         word_service.saveText(text)
         session['text'] = ""
+        flash("The words of the text has been saved successfully!", "success")
         return redirect(url_for("savingPage"))
-        # add success msg
     return redirect("/")
 
 
@@ -47,9 +47,9 @@ def countWord():
     if 'loggedin' in session:
         word = request.form['word']
         if word_service.wordHasInvalidCharacters(word):
+            flash("Error: text had invalid characters!", "error")
             return redirect(
                 url_for("wordCountingPage", word="-", quantity="-"))
-            # redirect banner for typing in sg
         quantity = word_service.getWordCount(word)
         return redirect(
             url_for("wordCountingPage", word=word, quantity=quantity))
@@ -72,17 +72,16 @@ def authenticate():
     account = account_service.findMatchingCredentials(email, password)
     if account:
         createSession(account)
+        flash("You were successfully logged in", "success")
         return redirect("/word-saving")
     else:
-        return "Email address or Password is incorrect!"
+        flash("Email address or Password is incorrect!", "error")
+        return redirect("/")
 
 
 @app.route('/logout')
 def logout():
-    session.pop('loggedin', None)
-    session.pop('id', None)
-    session.pop('username', None)
-    session.pop('text', None)
+    session.clear()
     return redirect("/")
 
 

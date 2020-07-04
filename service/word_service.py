@@ -27,7 +27,9 @@ def wordHasInvalidCharacters(word):
 def textHasInvalidCharacters(text):
     if text.strip() == "":
         return True
-    text = re.sub(r"[ -:()?!,.\d]", "a", text)
+    text = re.sub(r"[\*\'\"+%/]", "=", text)    
+    text = re.sub(r"[ -:()?!,.\d]", "", text)
+    text += "a"
     return not text.isalpha()
 
 

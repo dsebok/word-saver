@@ -1,7 +1,6 @@
 {% extends 'base-loggedin.html' %}
 
-{% block body %}
-<main>
+{% block main %}
     <section>
         <form action="{{ url_for('countWord') }}" method="POST">
             <h2>Count your word!</h2>
@@ -32,5 +31,4 @@
             </fieldset>
         </form>
     </section>
-</main>
 {% endblock %}

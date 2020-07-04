@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
-{% block nav %}
-<header>
+{% block header %}
     <div id="nav-and-logout">
         <nav>
             <a id="header" href="{{ url_for('savingPage') }}">WordSaver</a>
@@ -24,5 +23,4 @@
             <button type="submit">Logout</button>
         </form>
     </div>
-</header>
 {% endblock %}

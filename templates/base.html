@@ -11,8 +11,19 @@
 </head>
 
 <body>
-    {% block nav %}{% endblock %}
-    {% block body %}{% endblock %}
+    <header>
+        {% block header %}{% endblock %}
+    </header>
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class = "banner {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% block main %}{% endblock %}
+    </main>
 </body>
 
 </html>

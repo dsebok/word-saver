@@ -2,6 +2,7 @@
 	--blue: rgb(0,156,216);
 	--dark: rgb(52,59,64);
 	--grey: rgb(200,200,200);
+	--delicious-green: rgb(168,217,107);
 }
 
 html {
@@ -83,7 +84,9 @@ header button {
 
 h1{
     font-size: 50px;
-    font-weight: 700;
+	font-weight: 700;
+	margin-block-start: 15px;
+    margin-block-end: 15px;
 }
 
 h2 {
@@ -122,7 +125,7 @@ a {
 /******************* CONTAINERS *******************/
 
 main {
-	margin-top: 70px;
+	margin-top: 76px;
 }
 
 section {
@@ -164,6 +167,23 @@ td {
 	margin: 0px 0px 0px 7px;
 	font-size: 12px;
 	color: grey;
+}
+
+.banner {
+	width: 100%;
+	font-size: 0.75rem;
+	font-weight: bold;
+	padding: 5px;
+	text-align: center;
+}
+
+.success {
+	background-color: var(--delicious-green);
+	color: white;
+}
+
+.error {
+	background-color: red;
 }
 
 /******************* FORM *******************/

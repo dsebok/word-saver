@@ -1,7 +1,6 @@
 {% extends 'base-loggedin.html' %}
 
-{% block body %}
-<main>
+{% block main %}
     <section>
         <form action="{{ url_for('saveWords') }}" method="POST">
             <h2>Save your whole text!</h2>
@@ -15,5 +14,4 @@
             </fieldset>
         </form>
     </section>
-</main>
 {% endblock %}
