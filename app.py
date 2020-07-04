@@ -27,8 +27,10 @@ def saveWords():
             session['text'] = text
             return redirect(url_for("savingPage"))
             # add error msg
+        word_service.saveText(text)
         session['text'] = ""
         return redirect(url_for("savingPage"))
+        # add success msg
     return redirect("/")
 
 

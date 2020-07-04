@@ -21,7 +21,7 @@ def findMatchingCredentials(email, password):
 
 def getWordTable():
     cursor = mysql.connect().cursor()
-    cursor.execute("SELECT content, quantity FROM word")
+    cursor.execute("SELECT * FROM word")
     return cursor.fetchall()
 
 
@@ -31,3 +31,7 @@ def getWordCount(word):
         "SELECT quantity FROM word WHERE content=%s",
         (word))
     return cursor.fetchone()
+
+
+def updateWordTable(wordList):
+    return 0
