@@ -8,7 +8,9 @@ app.secret_key = 'qfV0ekN^e&r8!7PR'
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    if not session.get('error'):
+        session['error'] = ""
+    return render_template("index.html", errorMsg=session['error'])
 
 
 @app.route("/word-saving")
@@ -74,15 +76,13 @@ def authenticate():
         createSession(account)
         return redirect("/word-saving")
     else:
-        return "Email address or Password is incorrect!"
+        session['error'] = "Email address or Password is incorrect!"
+        return redirect("/")
 
 
 @app.route('/logout')
 def logout():
-    session.pop('loggedin', None)
-    session.pop('id', None)
-    session.pop('username', None)
-    session.pop('text', None)
+    session.clear()
     return redirect("/")
 
 
