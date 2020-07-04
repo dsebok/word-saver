@@ -19,3 +19,9 @@ class WordTable:
         for word in self.table:
             if externalWord.content.casefold() == word.content.casefold():
                 word.increaseQuantity()
+
+    def getQuantity(self, externalWord):
+        for word in self.table:
+            if externalWord.content.casefold() == word.content.casefold():
+                return word.quantity
+        return 0

@@ -36,9 +36,18 @@ def saveText(text):
     mysql_dao.updateWordTable(mergedList)
 
 
-def selectNewWords(wordList, databaseList):
-    return 0
+def selectNewWords(wordTable, dbTable):
+    newWordTable = WordTable()
+    for word in wordTable.table:
+        if not dbTable.containsWord(word):
+            newWordTable.add(word)
+    return newWordTable
 
 
-def selectExistingWords(wordList, databaseList):
-    return 0
+def selectExistingWords(wordTable, dbTable):
+    updateTable = WordTable()
+    for word in wordTable.table:
+        if dbTable.containsWord(word):
+            word.quantity += dbTable.getQuantity(word)
+            updateTable.add(word)
+    return updateTable

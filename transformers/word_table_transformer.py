@@ -22,7 +22,7 @@ def transformDbListToWordTable(dbList):
 def transformWordTableToDbList(wordTable):
     dbList = []
     for word in wordTable.table:
-        dbWord = []
+        dbWord = [""] * 3
         dbWord[0] = word.id
         dbWord[1] = word.content
         dbWord[2] = word.quantity
