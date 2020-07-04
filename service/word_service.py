@@ -1,4 +1,7 @@
 from dao import mysql_dao
+from domain.word import Word
+from domain.word_table import WordTable
+from transformers import word_table_transformer
 import re
 
 
@@ -22,22 +25,15 @@ def textHasInvalidCharacters(text):
 
 
 def saveText(text):
-    wordList = convertToWordList(text)
-    uniqueWordList = groupWords(wordList)  # this
-    databaseList = getWordTable()
-    newWordList = selectNewWords(wordList, databaseList)
-    updateList = selectExistingWords(wordList, databaseList)
+    dbList = getWordTable()
+    dbTable = word_table_transformer.transformDbListToWordTable(dbList)
+    wordTable = word_table_transformer.transformTextToWordTable(text)
+    newWordTable = selectNewWords(wordTable, dbTable)
+    updateTable = selectExistingWords(wordTable, dbTable)
+    newWordList = word_table_transformer.transformWordTableToDbList(newWordTable)
+    updateList = word_table_transformer.transformWordTableToDbList(updateTable)
     mergedList = newWordList + updateList
     mysql_dao.updateWordTable(mergedList)
-
-
-def convertToWordList(text):
-    text = re.sub(r"[-:()?!,.\d]", "", text)
-    return text.split()
-
-
-def groupWords(wordList):
-    return 0
 
 
 def selectNewWords(wordList, databaseList):
