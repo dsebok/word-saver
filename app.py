@@ -46,8 +46,9 @@ def wordCountingPage(word, quantity):
 def countWord():
     if 'loggedin' in session:
         word = request.form['word']
-        if word == "":
-            word = " "
+        if word_service.wordHasInvalidCharacters(word):
+            return redirect(
+                url_for("wordCountingPage", word="-", quantity="-"))
             # redirect banner for typing in sg
         quantity = word_service.getWordCount(word)
         return redirect(
@@ -83,15 +84,6 @@ def logout():
     session.pop('username', None)
     session.pop('text', None)
     return redirect("/")
-
-
-'''
-def authorizedAccess(target):
-    if 'loggedin' in session:
-        return render_template(
-            target, username=session['username'])
-    return redirect("/")
-'''
 
 
 def createSession(account):

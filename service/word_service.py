@@ -17,6 +17,13 @@ def getWordTable():
     return mysql_dao.getWordTable()
 
 
+def wordHasInvalidCharacters(word):
+    if word.strip() == "":
+        return True
+    word = re.sub(r"[\d]", "a", word)
+    return not word.isalpha()
+
+
 def textHasInvalidCharacters(text):
     if text.strip() == "":
         return True
