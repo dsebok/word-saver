@@ -18,41 +18,41 @@ def registrate(user_name, email, pwd_hash):
     db.commit()
 
 
-def getUserInfo(email):
+def get_user_info(email):
     cursor = mysql.connect().cursor()
     cursor.execute("SELECT * from User where email= %s", (email))
     return cursor.fetchone()
 
 
-def getWordTable():
+def get_word_table():
     cursor = mysql.connect().cursor()
     cursor.execute("SELECT * FROM word")
     return cursor.fetchall()
 
 
-def getWordCount(word):
+def get_word_count(word):
     cursor = mysql.connect().cursor()
     cursor.execute("SELECT quantity FROM word WHERE content=%s", (word))
     return cursor.fetchone()
 
 
-def updateWordTable(wordList):
-    query = createQuery(wordList)
+def update_word_table(word_list):
+    query = _create_query(word_list)
     db = mysql.connect()
     cursor = db.cursor()
     cursor.execute(query)
     db.commit()
 
 
-def createQuery(wordList):
+def _create_query(word_list):
     start = "INSERT INTO word (id, content, quantity) VALUES"
-    mid = flattenToString(wordList)
+    mid = _flatten_to_string(word_list)
     query = start + mid + " ON DUPLICATE KEY UPDATE quantity=VALUES(quantity)"
     return query
 
 
-def flattenToString(wordList):
-    midQuery = ""
-    for word in wordList:
-        midQuery += " (" + str(word[0]) + ", '" + word[1] + "', " + str(word[2]) + "),"
-    return midQuery[:-1]
+def _flatten_to_string(word_list):
+    mid_query = ""
+    for word in word_list:
+        mid_query += " (" + str(word[0]) + ", '" + word[1] + "', " + str(word[2]) + "),"
+    return mid_query[:-1]

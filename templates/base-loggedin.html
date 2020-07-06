@@ -1,26 +1,26 @@
 {% extends 'base.html' %}
 
 {% block header %}
-    <div id="nav-and-logout">
-        <nav>
-            <a id="header" href="{{ url_for('savingPage') }}">WordSaver</a>
-            <ul id="nav-list">
-                <li>
-                    <p>Welcome back, {{ username }}!</p>
-                </li>
-                <li>
-                    <a href="{{ url_for('savingPage') }}">Save</a>
-                </li>
-                <li>
-                    <a href="{{ url_for('wordCountingPage', word='-', quantity='-') }}">Find&Count</a>
-                </li>
-                <li>
-                    <a href="{{ url_for('wordTablePage') }}">Show me what you got!</a>
-                </li>
-            </ul>
-        </nav>
-        <form action="{{ url_for('logout') }}" method="GET">
-            <button type="submit">Logout</button>
-        </form>
-    </div>
+<div id="nav-and-logout">
+    <nav>
+        <a id="header" href="{{ url_for('saving_page') }}">WordSaver</a>
+        <ul id="nav-list">
+            <li>
+                <p>Welcome back, {{ user_name }}!</p>
+            </li>
+            <li>
+                <a href="{{ url_for('saving_page') }}">Save</a>
+            </li>
+            <li>
+                <a href="{{ url_for('word_counting_page', word='-', quantity='-') }}">Find&Count</a>
+            </li>
+            <li>
+                <a href="{{ url_for('word_table_page') }}">Show me what you got!</a>
+            </li>
+        </ul>
+    </nav>
+    <form action="{{ url_for('logout') }}" method="GET">
+        <button type="submit">Logout</button>
+    </form>
+</div>
 {% endblock %}

@@ -4,5 +4,5 @@ class Word:
         self.content = content
         self.quantity = 1
 
-    def increaseQuantity(self):
+    def increase_quantity(self):
         self.quantity += 1

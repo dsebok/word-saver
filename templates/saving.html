@@ -1,17 +1,16 @@
 {% extends 'base-loggedin.html' %}
 
 {% block main %}
-    <section>
-        <form action="{{ url_for('saveWords') }}" method="POST">
-            <h2>Save your whole text!</h2>
-            <h4>The words will be saved separately</h4>
-            <fieldset>
-                <div class="card-header">Save</div>
-                <textarea rows="5" cols="80" name="text" id="text"
-                    placeholder="Type your text here">{{ text }}</textarea>
-                <p class="remark">*Acceptable characters are: letters, digits and these punctuation marks ()?!-,.:</p>
-                <button type="submit">Save</button>
-            </fieldset>
-        </form>
-    </section>
+<section>
+    <form action="{{ url_for('save_words') }}" method="POST">
+        <h2>Save your whole text!</h2>
+        <h4>The words will be saved separately</h4>
+        <fieldset>
+            <div class="card-header">Save</div>
+            <textarea rows="5" cols="80" name="text" id="text" placeholder="Type your text here">{{ text }}</textarea>
+            <p class="remark">*Acceptable characters are: letters, digits and these punctuation marks ()?!-,.:</p>
+            <button type="submit">Save</button>
+        </fieldset>
+    </form>
+</section>
 {% endblock %}

@@ -1,34 +1,34 @@
 {% extends 'base-loggedin.html' %}
 
 {% block main %}
-    <section>
-        <form action="{{ url_for('countWord') }}" method="POST">
-            <h2>Count your word!</h2>
-            <h4>Check how many times your word is contained in the database</h4>
-            <fieldset>
-                <div class="card-header">Count</div>
-                <input type="text" name="word" id="word" placeholder="Type your word here">
-                <p class="remark">*Only one word is allowed (you may use digits but no punctuations)</p>
-                <table>
-                    <tr>
-                        <td>
-                            <label>Word:</label>
-                        </td>
-                        <td>
-                            <label>{{ prevWord }}</label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Word count:</label>
-                        </td>
-                        <td>
-                            <label>{{ wordCount }}</label>
-                        </td>
-                    </tr>
-                </table>
-                <button type="submit">Count</button>
-            </fieldset>
-        </form>
-    </section>
+<section>
+    <form action="{{ url_for('count_word') }}" method="POST">
+        <h2>Count your word!</h2>
+        <h4>Check how many times your word is contained in the database</h4>
+        <fieldset>
+            <div class="card-header">Count</div>
+            <input type="text" name="word" id="word" placeholder="Type your word here">
+            <p class="remark">*Only one word is allowed (you may use digits but no punctuations)</p>
+            <table>
+                <tr>
+                    <td>
+                        <label>Word:</label>
+                    </td>
+                    <td>
+                        <label>{{ prev_word }}</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Word count:</label>
+                    </td>
+                    <td>
+                        <label>{{ word_count }}</label>
+                    </td>
+                </tr>
+            </table>
+            <button type="submit">Count</button>
+        </fieldset>
+    </form>
+</section>
 {% endblock %}

@@ -8,12 +8,12 @@
 <section>
     <form action="{{ url_for('authenticate') }}" method="POST">
         <h2>Login to start!</h2>
-        <h4>Don't have an account? <a href="{{ url_for('registrationPage') }}">Sign up</a>!</h4>
+        <h4>Don't have an account? <a href="{{ url_for('registration_page') }}">Sign up</a>!</h4>
         <fieldset>
             <div class="card-header">Login</div>
             <input type="email" name="email" id="email" placeholder="Email">
             <input type="password" name="password" id="password" placeholder="Password">
-            <button id="loginButton" type="submit">Login</button>
+            <button type="submit">Login</button>
         </fieldset>
     </form>
 </section>

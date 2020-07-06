@@ -3,7 +3,7 @@ from service import account_service, word_service
 
 
 app = Flask(__name__)
-app.secret_key = 'qfV0ekN^e&r8!7PR'
+app.secret_key = "qfV0ekN^e&r8!7PR"
 
 
 @app.route("/")
@@ -12,100 +12,100 @@ def index():
 
 
 @app.route("/registrate")
-def registrationPage():
+def registration_page():
     return render_template("registration.html")
 
 
 @app.route("/rest-api/registrate", methods=["POST"])
 def registrate():
-    user_name = request.form['user_name']
-    email = request.form['email']
-    password = request.form['password']
+    user_name = request.form["user_name"]
+    email = request.form["email"]
+    password = request.form["password"]
     account_service.registrate(user_name, email, password)
     flash("Your registration was successful!", "success")
-    return redirect("/word-saving")
+    return redirect(url_for("index"))
 
 
 @app.route("/word-saving")
-def savingPage():
-    if 'loggedin' in session:
+def saving_page():
+    if "logged_in" in session:
         return render_template(
-            'saving.html', username=session['username'], text=session['text'])
-    return redirect("/")
+            "saving.html", user_name=session["user_name"], text=session["text"])
+    return redirect(url_for("index"))
 
 
 @app.route("/rest-api/save-words", methods=["POST"])
-def saveWords():
-    if 'loggedin' in session:
-        text = request.form['text']
-        if word_service.textHasInvalidCharacters(text):
-            session['text'] = text
+def save_words():
+    if "logged_in" in session:
+        text = request.form["text"]
+        if word_service.text_has_invalid_characters(text):
+            session["text"] = text
             flash("Error: text had invalid characters!", "error")
-            return redirect(url_for("savingPage"))
-        word_service.saveText(text)
-        session['text'] = ""
+            return redirect(url_for("saving_page"))
+        word_service.save_text(text)
+        session["text"] = ""
         flash("The words of the text has been saved successfully!", "success")
-        return redirect(url_for("savingPage"))
-    return redirect("/")
+        return redirect(url_for("saving_page"))
+    return redirect(url_for("index"))
 
 
 @app.route("/word-counting/<word>/<quantity>")
-def wordCountingPage(word, quantity):
-    if 'loggedin' in session:
+def word_counting_page(word, quantity):
+    if 'logged_in' in session:
         return render_template(
-            'word-counting.html', username=session['username'], prevWord=word, wordCount=quantity)
-    return redirect("/")
+            'word-counting.html', user_name=session['user_name'], prev_word=word, word_count=quantity)
+    return redirect(url_for("index"))
 
 
 @app.route("/rest-api/count-word", methods=["POST"])
-def countWord():
-    if 'loggedin' in session:
+def count_word():
+    if 'logged_in' in session:
         word = request.form['word']
-        if word_service.wordHasInvalidCharacters(word):
+        if word_service.word_has_invalid_characters(word):
             flash("Error: text had invalid characters!", "error")
             return redirect(
-                url_for("wordCountingPage", word="-", quantity="-"))
-        quantity = word_service.getWordCount(word)
+                url_for("word_counting_page", word="-", quantity="-"))
+        quantity = word_service.get_word_count(word)
         return redirect(
-            url_for("wordCountingPage", word=word, quantity=quantity))
-    return redirect("/")
+            url_for("word_counting_page", word=word, quantity=quantity))
+    return redirect(url_for("index"))
 
 
 @app.route("/word-table")
-def wordTablePage():
-    if 'loggedin' in session:
-        wordtable = word_service.getWordTable()
+def word_table_page():
+    if 'logged_in' in session:
+        word_table = word_service.get_word_table()
         return render_template(
-            'word-table.html', username=session['username'], wordtable=wordtable)
-    return redirect("/")
+            'word-table.html', user_name=session['user_name'], word_table=word_table)
+    return redirect(url_for("index"))
 
 
 @app.route("/rest-api/authenticate", methods=["POST"])
 def authenticate():
     email = request.form['email']
     password = request.form['password']
-    account = account_service.findMatchingCredentials(email, password)
+    account = account_service.find_matching_credentials(email, password)
     if account:
-        createSession(account)
+        _create_session(account)
         flash("You were successfully logged in", "success")
-        return redirect("/word-saving")
+        return redirect(url_for("saving_page"))
     else:
         flash("Email address or Password is incorrect!", "error")
-        return redirect("/")
+        return redirect(url_for("index"))
 
 
-@app.route('/logout')
+@app.route("/logout")
 def logout():
     session.clear()
-    return redirect("/")
+    return redirect(url_for("index"))
 
 
-def createSession(account):
-    session['loggedin'] = True
-    session['id'] = account[0]
-    session['username'] = account[1]
-    session['text'] = ""
+def _create_session(account):
+    session["logged_in"] = True
+    session["id"] = account[0]
+    session["user_name"] = account[1]
+    session["text"] = ""
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=5000)

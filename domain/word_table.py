@@ -9,18 +9,18 @@ class WordTable:
     def add(self, word):
         self.table.append(word)
 
-    def containsWord(self, externalWord):
+    def contains_word(self, external_word):
         for word in self.table:
-            if externalWord.content.casefold() == word.content.casefold():
+            if external_word.content.casefold() == word.content.casefold():
                 return True
         return False
 
-    def increaseQuantity(self, externalWord):
+    def increase_quantity(self, external_word):
         for word in self.table:
-            if externalWord.content.casefold() == word.content.casefold():
-                word.increaseQuantity()
+            if external_word.content.casefold() == word.content.casefold():
+                word.increase_quantity()
 
-    def getWord(self, content):
+    def get_word(self, content):
         for word in self.table:
             if content.casefold() == word.content.casefold():
                 return word
