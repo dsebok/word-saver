@@ -8,9 +8,22 @@ app.secret_key = 'qfV0ekN^e&r8!7PR'
 
 @app.route("/")
 def index():
-    if not session.get('error'):
-        session['error'] = ""
-    return render_template("index.html", errorMsg=session['error'])
+    return render_template("index.html")
+
+
+@app.route("/registrate")
+def registrationPage():
+    return render_template("registration.html")
+
+
+@app.route("/rest-api/registrate", methods=["POST"])
+def registrate():
+    user_name = request.form['user_name']
+    email = request.form['email']
+    password = request.form['password']
+    account_service.registrate(user_name, email, password)
+    flash("Your registration was successful!", "success")
+    return redirect("/word-saving")
 
 
 @app.route("/word-saving")

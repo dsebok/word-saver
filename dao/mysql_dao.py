@@ -10,41 +10,49 @@ app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
 
 
+def registrate(user_name, email, pwd_hash):
+    db = mysql.connect()
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO user VALUES(default, %s, %s, %s)",
+                   (user_name, email, pwd_hash))
+    db.commit()
+
+
 def getUserInfo(email):
     cursor = mysql.connect().cursor()
-    cursor.execute("SELECT * from User where email= % s", (email))
+    cursor.execute("SELECT * from User where email= %s", (email))
     return cursor.fetchone()
 
 
 def getWordTable():
-    cursor=mysql.connect().cursor()
+    cursor = mysql.connect().cursor()
     cursor.execute("SELECT * FROM word")
     return cursor.fetchall()
 
 
 def getWordCount(word):
-    cursor=mysql.connect().cursor()
+    cursor = mysql.connect().cursor()
     cursor.execute("SELECT quantity FROM word WHERE content=%s", (word))
     return cursor.fetchone()
 
 
 def updateWordTable(wordList):
-    query=createQuery(wordList)
-    db=mysql.connect()
-    cursor=db.cursor()
+    query = createQuery(wordList)
+    db = mysql.connect()
+    cursor = db.cursor()
     cursor.execute(query)
     db.commit()
 
 
 def createQuery(wordList):
-    start="INSERT INTO word (id, content, quantity) VALUES"
-    mid=flattenToString(wordList)
-    query=start + mid + " ON DUPLICATE KEY UPDATE quantity=VALUES(quantity)"
+    start = "INSERT INTO word (id, content, quantity) VALUES"
+    mid = flattenToString(wordList)
+    query = start + mid + " ON DUPLICATE KEY UPDATE quantity=VALUES(quantity)"
     return query
 
 
 def flattenToString(wordList):
-    midQuery=""
+    midQuery = ""
     for word in wordList:
         midQuery += " (" + str(word[0]) + ", '" + word[1] + "', " + str(word[2]) + "),"
     return midQuery[:-1]

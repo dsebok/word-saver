@@ -6,14 +6,14 @@
 {% endblock %}
 {% block main %}
 <section>
-    <form action="{{ url_for('authenticate') }}" method="POST">
-        <h2>Login to start!</h2>
-        <h4>Don't have an account? <a href="{{ url_for('registrationPage') }}">Sign up</a>!</h4>
+    <form action="{{ url_for('registrate') }}" method="POST">
+        <h2>Join Now — It’s Free & Easy!</h2>
         <fieldset>
-            <div class="card-header">Login</div>
+            <div class="card-header">Sign up</div>
+            <input type="text" name="user_name" id="user_name" placeholder="Username">
             <input type="email" name="email" id="email" placeholder="Email">
             <input type="password" name="password" id="password" placeholder="Password">
-            <button id="loginButton" type="submit">Login</button>
+            <button id="loginButton" type="submit">Create Account</button>
         </fieldset>
     </form>
 </section>
