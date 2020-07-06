@@ -18,8 +18,6 @@ def get_word_table():
 
 
 def word_has_invalid_characters(word):
-    if word.strip() == "":
-        return True
     word = re.sub(r"[\d]", "a", word)
     return not word.isalpha()
 

@@ -53,7 +53,7 @@ def save_words():
 def word_counting_page(word, quantity):
     if 'logged_in' in session:
         return render_template(
-            'word-counting.html', user_name=session['user_name'], prev_word=word, word_count=quantity)
+            'word-counting.html', user_name=session['user_name'], prev_word=word, word_count=quantity, text=session["text"])
     return redirect(url_for("index"))
 
 
@@ -61,13 +61,15 @@ def word_counting_page(word, quantity):
 def count_word():
     if 'logged_in' in session:
         word = request.form['word']
-        if word_service.word_has_invalid_characters(word):
-            flash("Error: text had invalid characters!", "error")
+        error = _check_for_empty(word)
+        if error is None:
+            error = _check_for_invalid_input(word)
+        if error is None:
+            session['text'] = ""
+            quantity = word_service.get_word_count(word)
             return redirect(
-                url_for("word_counting_page", word="-", quantity="-"))
-        quantity = word_service.get_word_count(word)
-        return redirect(
-            url_for("word_counting_page", word=word, quantity=quantity))
+                url_for("word_counting_page", word=word, quantity=quantity))
+        return error
     return redirect(url_for("index"))
 
 
@@ -105,6 +107,22 @@ def _create_session(account):
     session["id"] = account[0]
     session["user_name"] = account[1]
     session["text"] = ""
+
+
+def _check_for_empty(word):
+    if word == "":
+        session['text'] = ""
+        flash("Error: the input is empty!", "error")
+        return redirect(
+            url_for("word_counting_page", word="-", quantity="-"))
+
+
+def _check_for_invalid_input(word):
+    if word_service.word_has_invalid_characters(word):
+        session['text'] = word
+        flash("Error: text had invalid characters!", "error")
+        return redirect(
+            url_for("word_counting_page", word="-", quantity="-"))
 
 
 if __name__ == "__main__":
