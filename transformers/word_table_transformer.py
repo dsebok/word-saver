@@ -5,7 +5,7 @@ import re
 
 def transform_text_to_word_table(text):
     word_list = _convert_to_word_list(text)
-    word_table = convert_list_to_table(word_list)
+    word_table = _convert_list_to_table(word_list)
     return word_table
 
 
@@ -36,7 +36,7 @@ def _convert_to_word_list(text):
     return text.split()
 
 
-def convert_list_to_table(word_list):
+def _convert_list_to_table(word_list):
     word_table = WordTable()
     for content in word_list:
         word = Word(content)
