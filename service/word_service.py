@@ -43,6 +43,22 @@ def save_text(text):
     mysql_dao.update_word_table(merged_list)
 
 
+def check_user_name(user_name):
+    return True
+
+
+def check_password(password):
+    return True
+
+
+def check_email(email):
+    return True
+
+
+def check_email_in_db(email):
+    return True
+
+
 def _select_new_words(word_table, db_table):
     new_word_table = WordTable()
     for word in word_table.table:

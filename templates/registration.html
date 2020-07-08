@@ -10,9 +10,16 @@
         <h2>Join Now — It’s Free & Easy!</h2>
         <fieldset>
             <div class="card-header">Sign up</div>
-            <input type="text" name="user_name" id="user_name" placeholder="Username">
-            <input type="email" name="email" id="email" placeholder="Email">
-            <input type="password" name="password" id="password" placeholder="Password">
+            <input type="text" name="user_name" id="user_name" placeholder="Username" required value="{{ user_name }}">
+            <p class="remark">*Username must be between 3-20 characters and may contain:</p>
+            <p class="remark"> - letters, digits, hyphen(-)</p>
+            <p class="remark"> - or underscore(_)</p>
+            <input type="email" name="email" id="email" placeholder="Email" required value="{{ email }}">
+            <input type="password" name="password" id="password" placeholder="Password" required>
+            <p class="remark">*Password must be between 8-20 characters and must contain:</p>
+            <p class="remark"> - an upper- and a lower-case letter</p>
+            <p class="remark"> - two digits</p>
+            <p class="remark"> - a special character</p>
             <button type="submit">Create Account</button>
         </fieldset>
     </form>

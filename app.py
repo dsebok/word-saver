@@ -16,8 +16,8 @@ _LOG_OUT_URL = "/logout"
 _INDEX_HTML = "index.html"
 _REGISTRATION_HTML = "registration.html"
 _SAVING_HTML = "saving.html"
-_WORD_COUNTING_HTML = 'word-counting.html'
-_WORD_TABLE_HTML = 'word-table.html'
+_WORD_COUNTING_HTML = "word-counting.html"
+_WORD_TABLE_HTML = "word-table.html"
 
 app = Flask(__name__)
 app.secret_key = "qfV0ekN^e&r8!7PR"
@@ -28,19 +28,27 @@ def index():
     return render_template(_INDEX_HTML)
 
 
-@app.route(_REGISTRATION_PAGE_URL)
-def registration_page():
-    return render_template(_REGISTRATION_HTML)
+@app.route(_REGISTRATION_PAGE_URL, defaults={"user_name": "", "email": ""})
+@app.route(_REGISTRATION_PAGE_URL + "/<user_name>/<email>")
+def registration_page(user_name, email):
+    return render_template(_REGISTRATION_HTML, user_name=user_name, email=email)
 
 
 @app.route(_REGISTRATE_URL, methods=["POST"])
 def registrate():
     user_name = request.form["user_name"]
-    email = request.form["email"]
     password = request.form["password"]
-    account_service.registrate(user_name, email, password)
-    flash("Your registration was successful!", "success")
-    return redirect(_INDEX_PAGE_URL)
+    email = request.form["email"]
+    user_name_is_ok = _check_reg_user_name(user_name)
+    password_is_ok = _check_reg_password(password)
+    email_is_ok = _check_reg_email(email)
+    email_is_new = _check_email_in_db(email)
+    if user_name_is_ok and password_is_ok and email_is_ok and email_is_new:
+        account_service.registrate(user_name, email, password)
+        flash("Your registration was successful!", "success")
+        return redirect(_INDEX_PAGE_URL)
+    else:
+        return redirect(_REGISTRATION_PAGE_URL + "/" + str(user_name) + "/" + str(email))
 
 
 @app.route(_WORD_SAVING_PAGE_URL)
@@ -66,23 +74,24 @@ def save_words():
     return redirect(_INDEX_PAGE_URL)
 
 
+@app.route(_WORD_COUNTING_PAGE_URL, defaults={"word": "", "quantity": ""})
 @app.route(_WORD_COUNTING_PAGE_URL + "/<word>/<quantity>")
 def word_counting_page(word, quantity):
-    if 'logged_in' in session:
+    if "logged_in" in session:
         return render_template(
-            _WORD_COUNTING_HTML, user_name=session['user_name'], prev_word=word, word_count=quantity, text=session["text"])
+            _WORD_COUNTING_HTML, user_name=session["user_name"], prev_word=word, word_count=quantity, text=session["text"])
     return redirect(_INDEX_PAGE_URL)
 
 
 @app.route(_WORD_COUNTING_URL, methods=["POST"])
 def count_word():
-    if 'logged_in' in session:
-        word = request.form['word']
+    if "logged_in" in session:
+        word = request.form["word"]
         error = _check_for_empty(word)
         if error is None:
             error = _check_for_invalid_input(word)
         if error is None:
-            session['text'] = ""
+            session["text"] = ""
             quantity = word_service.get_word_count(word)
             return redirect(
                 _WORD_COUNTING_PAGE_URL + "/" + str(word) + "/" + str(quantity))
@@ -92,20 +101,20 @@ def count_word():
 
 @app.route(_WORD_TABLE_PAGE_URL)
 def word_table_page():
-    if 'logged_in' in session:
+    if "logged_in" in session:
         word_table = word_service.get_word_table()
         return render_template(
-            _WORD_TABLE_HTML, user_name=session['user_name'], word_table=word_table)
+            _WORD_TABLE_HTML, user_name=session["user_name"], word_table=word_table)
     return redirect(_INDEX_PAGE_URL)
 
 
 @app.route(_AUTHENTICATE_URL, methods=["POST"])
 def authenticate():
-    email = request.form['email']
-    password = request.form['password']
+    email = request.form["email"]
+    password = request.form["password"]
     account = account_service.find_matching_credentials(email, password)
     if account:
-        _create_session(account)
+        _fill_session_data(account)
         flash("You were successfully logged in", "success")
         return redirect(_WORD_SAVING_PAGE_URL)
     else:
@@ -119,7 +128,7 @@ def logout():
     return redirect(_INDEX_PAGE_URL)
 
 
-def _create_session(account):
+def _fill_session_data(account):
     session["logged_in"] = True
     session["id"] = account[0]
     session["user_name"] = account[1]
@@ -128,16 +137,48 @@ def _create_session(account):
 
 def _check_for_empty(word):
     if word == "":
-        session['text'] = ""
+        session["text"] = ""
         flash("Error: the input is empty!", "error")
-        return redirect(_WORD_COUNTING_PAGE_URL + "/-/-")
+        return redirect(_WORD_COUNTING_PAGE_URL)
 
 
 def _check_for_invalid_input(word):
     if word_service.word_has_invalid_characters(word):
-        session['text'] = word
+        session["text"] = word
         flash("Error: text had invalid characters!", "error")
-        return redirect(_WORD_COUNTING_PAGE_URL + "/-/-")
+        return redirect(_WORD_COUNTING_PAGE_URL)
+
+
+def _check_reg_user_name(user_name):
+    accepted = word_service.check_user_name(user_name)
+    if not accepted:
+        flash("Error: the username is invalid. Check the conditions!", "error")
+        return False
+    return True
+
+
+def _check_reg_password(password):
+    accepted = word_service.check_password(password)
+    if not accepted:
+        flash("Error: the password is invalid. Check the conditions!", "error")
+        return False
+    return True
+
+
+def _check_reg_email(email):
+    accepted = word_service.check_email(email)
+    if not accepted:
+        flash("Error: the email is invalid. Use a valid e-mail address!", "error")
+        return False
+    return True
+
+
+def _check_email_in_db(email):
+    accepted = word_service.check_email_in_db(email)
+    if not accepted:
+        flash("Error: this e-mail address is already in use. Choose an other!", "error")
+        return False
+    return True
 
 
 if __name__ == "__main__":
