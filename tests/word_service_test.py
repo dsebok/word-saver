@@ -165,6 +165,83 @@ class WordServiceTest(unittest.TestCase):
         # THEN
         self.assertTrue(result)
 
+    def test_user_name_check_accepts_letters_digits_hypens_and_underscores(self):
+        # GIVEN
+        user_name = "test_me-100_times"
+        # WHEN
+        result = word_service.check_user_name(user_name)
+        # THEN
+        self.assertTrue(result)
+
+    def test_user_name_check_accepts_input_if_it_has_min_one_letter(self):
+        # GIVEN
+        user_name_ok = "t34"
+        user_name_not_ok = "134"
+        # WHEN
+        accepted_result = word_service.check_user_name(user_name_ok)
+        denied_result = word_service.check_user_name(user_name_not_ok)
+        # THEN
+        self.assertTrue(accepted_result)
+        self.assertFalse(denied_result)
+
+    def test_user_name_check_denies_spaces(self):
+        # GIVEN
+        user_name = "test me"
+        # WHEN
+        result = word_service.check_user_name(user_name)
+        # THEN
+        self.assertFalse(result)
+
+    def test_user_name_check_denies_less_than_3_chars(self):
+        # GIVEN
+        user_name = "me"
+        # WHEN
+        result = word_service.check_user_name(user_name)
+        # THEN
+        self.assertFalse(result)
+
+    def test_user_name_check_denies_more_than_20_chars(self):
+        # GIVEN
+        user_name = "12345678901234567890a"
+        # WHEN
+        result = word_service.check_user_name(user_name)
+        # THEN
+        self.assertFalse(result)
+
+    def test_user_name_check_denies_other_operators(self):
+        # GIVEN
+        user_name_plus = "abc+def"
+        user_name_div = "abc/def"
+        user_name_mult = "abc*def"
+        user_name_mod = "abc\%def"
+        # WHEN
+        result_plus = word_service.check_user_name(user_name_plus)
+        result_div = word_service.check_user_name(user_name_div)
+        result_mult = word_service.check_user_name(user_name_mult)
+        result_mod = word_service.check_user_name(user_name_mod)
+        # THEN
+        self.assertFalse(result_plus)
+        self.assertFalse(result_div)
+        self.assertFalse(result_mult)
+        self.assertFalse(result_mod)
+
+    def test_user_name_check_denies_any_parenthesis(self):
+        #GIVEN
+        user_name_parenth = "(name)"
+        user_name_square = "[name]"
+        user_name_curly = "{name}"
+        user_name_angle = "<name>"
+        # WHEN
+        result_parenth = word_service.check_user_name(user_name_parenth)
+        result_square = word_service.check_user_name(user_name_square)
+        result_curly = word_service.check_user_name(user_name_curly)
+        result_angle = word_service.check_user_name(user_name_angle)
+        # THEN
+        self.assertFalse(result_parenth)
+        self.assertFalse(result_square)
+        self.assertFalse(result_curly)
+        self.assertFalse(result_angle)
+
 
 def main():
     unittest.main()

@@ -44,7 +44,13 @@ def save_text(text):
 
 
 def check_user_name(user_name):
-    return True
+    if user_name.strip() == "":
+        return False
+    if len(user_name) < 3 or len(user_name) > 20:
+        return False
+    user_name = re.sub(r"[\*\"+%/]", "=", user_name)
+    user_name = re.sub(r"[-_\d]", "", user_name)
+    return user_name.isalpha()
 
 
 def check_password(password):

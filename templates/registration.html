@@ -11,7 +11,9 @@
         <fieldset>
             <div class="card-header">Sign up</div>
             <input type="text" name="user_name" id="user_name" placeholder="Username" required value="{{ user_name }}">
-            <p class="remark">*Username must be between 3-20 characters and may contain:</p>
+            <p class="remark">*Username must be between 3-20 characters and must contain:</p>
+            <p class="remark"> - one letter</p>
+            <p class="remark"> it may contain additional:</p>
             <p class="remark"> - letters, digits, hyphen(-)</p>
             <p class="remark"> - or underscore(_)</p>
             <input type="email" name="email" id="email" placeholder="Email" required value="{{ email }}">
