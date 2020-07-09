@@ -39,14 +39,17 @@ def registrate():
     user_name = request.form["user_name"]
     password = request.form["password"]
     email = request.form["email"]
+    confirmed_pwd = request.form["confirmed_pwd"]
     user_name_is_ok = _check_reg_user_name(user_name)
     password_is_ok = _check_reg_password(password)
+    confirmed_pwd_is_ok = _check_confirmed_pwd(password, confirmed_pwd)
     email_is_ok = _check_reg_email(email)
-    email_is_new = _check_email_in_db(email)
-    if user_name_is_ok and password_is_ok and email_is_ok and email_is_new:
-        account_service.registrate(user_name, email, password)
-        flash("Your registration was successful!", "success")
-        return redirect(_INDEX_PAGE_URL)
+    if user_name_is_ok and password_is_ok and confirmed_pwd_is_ok and email_is_ok:
+        email_is_new = _check_email_in_db(email)
+        if email_is_new:
+            account_service.registrate(user_name, email, password)
+            flash("Your registration was successful!", "success")
+            return redirect(_INDEX_PAGE_URL)
     else:
         return redirect(_REGISTRATION_PAGE_URL + "/" + str(user_name) + "/" + str(email))
 
@@ -161,6 +164,13 @@ def _check_reg_password(password):
     accepted = word_service.check_password(password)
     if not accepted:
         flash("Error: the password is invalid. Check the conditions!", "error")
+        return False
+    return True
+
+
+def _check_confirmed_pwd(password, confirmed_pwd):
+    if password != confirmed_pwd:
+        flash("Error: the password and the confirmed password are not the same!", "error")
         return False
     return True
 
