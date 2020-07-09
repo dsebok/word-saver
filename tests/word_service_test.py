@@ -242,6 +242,102 @@ class WordServiceTest(unittest.TestCase):
         self.assertFalse(result_curly)
         self.assertFalse(result_angle)
 
+    def test_password_check_accepts_any_chars(self):
+        # GIVEN
+        pwd = "tst_ME 123-+!%/=(˘\'"
+        # WHEN
+        result = word_service.check_password(pwd)
+        # THEN
+        self.assertTrue(result)
+
+    def test_password_check_denies_only_spaces(self):
+        # GIVEN
+        pwd = "      "
+        # WHEN
+        result = word_service.check_password(pwd)
+        # THEN
+        self.assertFalse(result)
+
+    def test_password_check_requires_min_8_chars(self):
+        # GIVEN
+        pwd_ok = "tME1234*"
+        pwd_denied = "tME123*"
+        # WHEN
+        result_ok = word_service.check_password(pwd_ok)
+        result_denied = word_service.check_password(pwd_denied)
+        # THEN
+        self.assertTrue(result_ok)
+        self.assertFalse(result_denied)
+        
+    def test_password_check_accepts_max_20_chars(self):
+        # GIVEN
+        pwd_ok = "test_ME-901234567890"
+        pwd_denied = "test_ME-9012345678901"
+        # WHEN
+        result_ok = word_service.check_password(pwd_ok)
+        result_denied = word_service.check_password(pwd_denied)
+        # THEN
+        self.assertTrue(result_ok)
+        self.assertFalse(result_denied)
+
+    def test_password_check_requires_1_lowercase_letter(self):
+        # GIVEN
+        pwd_ok = "testME_now24"
+        pwd_denied = "TESTME_NOW24"
+        # WHEN
+        result_ok = word_service.check_password(pwd_ok)
+        result_denied = word_service.check_password(pwd_denied)
+        # THEN
+        self.assertTrue(result_ok)
+        self.assertFalse(result_denied)
+
+    def test_password_check_requires_1_uppercase_letter(self):
+        # GIVEN
+        pwd_ok = "testME_now24"
+        pwd_denied = "testme_now24"
+        # WHEN
+        result_ok = word_service.check_password(pwd_ok)
+        result_denied = word_service.check_password(pwd_denied)
+        # THEN
+        self.assertTrue(result_ok)
+        self.assertFalse(result_denied)
+
+    def test_password_check_requires_2_digits(self):
+        # GIVEN
+        pwd_ok = "testME_now24"
+        pwd_denied = "testME_now2"
+        # WHEN
+        result_ok = word_service.check_password(pwd_ok)
+        result_denied = word_service.check_password(pwd_denied)
+        # THEN
+        self.assertTrue(result_ok)
+        self.assertFalse(result_denied)
+
+    def test_password_check_requires_1_special_char(self):
+        # GIVEN
+        pwd_ok_1 = "testME_now24"
+        pwd_ok_2 = "testME*now24"
+        pwd_ok_3 = "testME%now24"
+        pwd_ok_4 = "testME}now24"
+        pwd_ok_5 = "testME^now24"
+        pwd_denied_1 = "testMEnow24"
+        pwd_denied_2 = "testME now24"
+        # WHEN
+        result_ok_1 = word_service.check_password(pwd_ok_1)
+        result_ok_2 = word_service.check_password(pwd_ok_2)
+        result_ok_3 = word_service.check_password(pwd_ok_3)
+        result_ok_4 = word_service.check_password(pwd_ok_4)
+        result_ok_5 = word_service.check_password(pwd_ok_5)
+        result_denied_1 = word_service.check_password(pwd_denied_1)
+        result_denied_2 = word_service.check_password(pwd_denied_2)
+        # THEN
+        self.assertTrue(result_ok_1)
+        self.assertTrue(result_ok_2)
+        self.assertTrue(result_ok_3)
+        self.assertTrue(result_ok_4)
+        self.assertTrue(result_ok_5)
+        self.assertFalse(result_denied_1)
+        self.assertFalse(result_denied_2)
 
 def main():
     unittest.main()

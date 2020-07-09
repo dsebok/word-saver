@@ -44,8 +44,7 @@ def save_text(text):
 
 
 def check_user_name(user_name):
-    if user_name.strip() == "":
-        return False
+    user_name = user_name.strip()
     if len(user_name) < 3 or len(user_name) > 20:
         return False
     user_name = re.sub(r"[\*\"+%/]", "=", user_name)
@@ -54,7 +53,15 @@ def check_user_name(user_name):
 
 
 def check_password(password):
-    return True
+    password = password.strip()
+    if len(password) < 8 or len(password) > 20:
+        return False
+    contains_lower_case = bool(re.search(r"[a-z]", password))
+    contains_upper_case = bool(re.search(r"[A-Z]", password))
+    contains_min_two_digits = _check_digits_in_pwd(password)
+    if contains_lower_case and contains_upper_case and contains_min_two_digits:
+        return _contains_special_char(password)
+    return False
 
 
 def check_email(email):
@@ -82,3 +89,16 @@ def _select_existing_words(word_table, db_table):
             word.id = db_word.id
             update_table.add(word)
     return update_table
+
+
+def _check_digits_in_pwd(pwd):
+    count = 0
+    while len(pwd) > 0:
+        if pwd[0].isdigit(): count += 1
+        pwd = pwd[1:]
+    return count > 1
+
+
+def _contains_special_char(pwd):
+    pwd = re.sub(r"[ a-zA-Z\d]", "", pwd)
+    return len(pwd) > 0
