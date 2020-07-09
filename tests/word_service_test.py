@@ -92,7 +92,7 @@ class WordServiceTest(unittest.TestCase):
         result = word_service.word_has_invalid_characters(word)
         # THEN
         self.assertFalse(result)
-        
+
     def test_word_check_accepts_only_digits(self):
         # GIVEN
         word = "0123456789"
@@ -116,7 +116,7 @@ class WordServiceTest(unittest.TestCase):
         result = word_service.word_has_invalid_characters(word)
         # THEN
         self.assertTrue(result)
-    
+
     def test_word_check_denies_midspace(self):
         # GIVEN
         word = "mid space"
@@ -148,7 +148,7 @@ class WordServiceTest(unittest.TestCase):
         result = word_service.word_has_invalid_characters(word)
         # THEN
         self.assertTrue(result)
-    
+
     def test_word_check_denies_only_space(self):
         # GIVEN
         word = "   "
@@ -213,7 +213,7 @@ class WordServiceTest(unittest.TestCase):
         user_name_plus = "abc+def"
         user_name_div = "abc/def"
         user_name_mult = "abc*def"
-        user_name_mod = "abc\%def"
+        user_name_mod = r"abc\%def"
         # WHEN
         result_plus = word_service.check_user_name(user_name_plus)
         result_div = word_service.check_user_name(user_name_div)
@@ -226,7 +226,7 @@ class WordServiceTest(unittest.TestCase):
         self.assertFalse(result_mod)
 
     def test_user_name_check_denies_any_parenthesis(self):
-        #GIVEN
+        # GIVEN
         user_name_parenth = "(name)"
         user_name_square = "[name]"
         user_name_curly = "{name}"
@@ -268,7 +268,7 @@ class WordServiceTest(unittest.TestCase):
         # THEN
         self.assertTrue(result_ok)
         self.assertFalse(result_denied)
-        
+
     def test_password_check_accepts_max_20_chars(self):
         # GIVEN
         pwd_ok = "test_ME-901234567890"
@@ -338,6 +338,83 @@ class WordServiceTest(unittest.TestCase):
         self.assertTrue(result_ok_5)
         self.assertFalse(result_denied_1)
         self.assertFalse(result_denied_2)
+
+    def test_email_check_accepts_normal_email_address(self):
+        # GIVEN
+        email_1 = "test@normal.com"
+        email_2 = "te_st@normal.com"
+        email_3 = "te-st@normal.com"
+        email_4 = "te+st@normal.com"
+        # WHEN
+        result_1 = word_service.check_email(email_1)
+        result_2 = word_service.check_email(email_2)
+        result_3 = word_service.check_email(email_3)
+        result_4 = word_service.check_email(email_4)
+        # THEN
+        self.assertTrue(result_1)
+        self.assertTrue(result_2)
+        self.assertTrue(result_3)
+        self.assertTrue(result_4)
+
+    def test_email_check_requires_point_after_at(self):
+        # GIVEN
+        email = "te.st@normalcom"
+        # WHEN
+        result = word_service.check_email(email)
+        # THEN
+        self.assertFalse(result)
+
+    def test_email_check_denies_point_in_special_places(self):
+        # GIVEN
+        email_ok = "test@normal.com"
+        email_denied_1 = "test@.normal.com"
+        email_denied_2 = "test@normal.com."
+        email_denied_3 = "test@normal..com"
+        # WHEN
+        result_ok = word_service.check_email(email_ok)
+        result_denied_1 = word_service.check_email(email_denied_1)
+        result_denied_2 = word_service.check_email(email_denied_2)
+        result_denied_3 = word_service.check_email(email_denied_3)
+        # THEN
+        self.assertTrue(result_ok)
+        self.assertFalse(result_denied_1)
+        self.assertFalse(result_denied_2)
+        self.assertFalse(result_denied_3)
+
+    def test_email_check_accepts_only_1_at(self):
+        # GIVEN
+        email_ok = "test@normal.com"
+        email_denied_1 = "testnormal.com"
+        email_denied_2 = "test@norm@al.com"
+        email_denied_3 = "test@normal.comtest@normal.com"
+        # WHEN
+        result_ok = word_service.check_email(email_ok)
+        result_denied_1 = word_service.check_email(email_denied_1)
+        result_denied_2 = word_service.check_email(email_denied_2)
+        result_denied_3 = word_service.check_email(email_denied_3)
+        # THEN
+        self.assertTrue(result_ok)
+        self.assertFalse(result_denied_1)
+        self.assertFalse(result_denied_2)
+        self.assertFalse(result_denied_3)
+
+    def test_email_check_denies_some_special_chars(self):
+        # GIVEN
+        email_ok = "te_st@normal.com"
+        email_denied_1 = "te$st@normal.com"
+        email_denied_2 = "te/st@normal.com"
+        email_denied_3 = "te*st@normal.com"
+        # WHEN
+        result_ok = word_service.check_email(email_ok)
+        result_denied_1 = word_service.check_email(email_denied_1)
+        result_denied_2 = word_service.check_email(email_denied_2)
+        result_denied_3 = word_service.check_email(email_denied_3)
+        # THEN
+        self.assertTrue(result_ok)
+        self.assertFalse(result_denied_1)
+        self.assertFalse(result_denied_2)
+        self.assertFalse(result_denied_3)
+
 
 def main():
     unittest.main()

@@ -4,6 +4,8 @@ from domain.word_table import WordTable
 from transformers import word_table_transformer
 import re
 
+_GENERAL_EMAIL_REGEX = r"^[a-z0-9]+[a-z0-9_\.+-]*[a-z0-9]+\@([a-z0-9-]+\.)+[a-z0-9]+$"
+
 
 def get_word_count(word):
     quantity = mysql_dao.get_word_count(word)
@@ -65,7 +67,7 @@ def check_password(password):
 
 
 def check_email(email):
-    return True
+    return bool(re.match(_GENERAL_EMAIL_REGEX, email))
 
 
 def check_email_in_db(email):
@@ -94,7 +96,8 @@ def _select_existing_words(word_table, db_table):
 def _check_digits_in_pwd(pwd):
     count = 0
     while len(pwd) > 0:
-        if pwd[0].isdigit(): count += 1
+        if pwd[0].isdigit():
+            count += 1
         pwd = pwd[1:]
     return count > 1
 
