@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template, url_for, redirect, session, flash
-from service import account_service, word_service
+from service import account_service, word_service, init_service
 
 _INDEX_PAGE_URL = "/"
 _REGISTRATION_PAGE_URL = "/registrate"
@@ -190,5 +190,10 @@ def _check_input(checker, message, *args):
     return accepted
 
 
+def setup_app(app):
+    init_service.init_db_tables()
+
+setup_app(app)
+
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(port=5000)

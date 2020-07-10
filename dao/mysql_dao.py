@@ -10,11 +10,33 @@ app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
 
 
+def init_user_table():
+    db = mysql.connect()
+    cursor = db.cursor()
+    cursor.execute("CREATE TABLE IF NOT EXISTS user(" + \
+        "id INT NOT NULL AUTO_INCREMENT, " + \
+        "username VARCHAR(30) NOT NULL, " + \
+        "email VARCHAR(50) NOT NULL, " + \
+        "password VARCHAR(200) NOT NULL, " + \
+        "PRIMARY KEY(id))")
+    db.commit()
+
+
+def init_word_table():
+    db = mysql.connect()
+    cursor = db.cursor()
+    cursor.execute("CREATE TABLE IF NOT EXISTS word(" + \
+        "id INT NOT NULL AUTO_INCREMENT, " + \
+        "content VARCHAR(100) NOT NULL, " + \
+        "quantity INT NOT NULL DEFAULT 1, " + \
+        "PRIMARY KEY(id))")
+    db.commit()
+
+
 def registrate(user_name, email, pwd_hash):
     db = mysql.connect()
     cursor = db.cursor()
-    cursor.execute("INSERT INTO user VALUES(default, %s, %s, %s)",
-                   (user_name, email, pwd_hash))
+    cursor.execute("INSERT INTO user VALUES(default, %s, %s, %s)", (user_name, email, pwd_hash))
     db.commit()
 
 
