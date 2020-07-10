@@ -20,12 +20,14 @@ _WORD_COUNTING_HTML = "word-counting.html"
 _WORD_TABLE_HTML = "word-table.html"
 
 _ERROR = "error"
-_SUCCESS = "success"
 _INVALID_USERNAME = "Error: the username is invalid. Check the conditions!"
 _INVALID_PASSWORD = "Error: the password is invalid. Check the conditions!"
 _INVALID_EMAIL = "Error: the email is invalid. Use a valid e-mail address!"
 _EXISTING_EMAIL = "Error: this e-mail address is already in use. Choose an other!"
 _MISMATCHING_PASSWORD = "Error: the password and the confirmed password are not the same!"
+
+_SUCCESS = "success"
+_SUCCESSFUL_REG = "Your registration was successful!"
 
 app = Flask(__name__)
 app.secret_key = "qfV0ekN^e&r8!7PR"
@@ -50,13 +52,13 @@ def registrate():
     confirmed_pwd = request.form["confirmed_pwd"]
     user_name_is_ok = _check_reg_user_name(user_name)
     password_is_ok = _check_reg_password(password)
-    confirmed_pwd_is_ok = _check_confirmed_pwd(password, confirmed_pwd)
+    password_is_confirmed = _check_confirmed_pwd(password, confirmed_pwd)
     email_is_ok = _check_reg_email(email)
-    if user_name_is_ok and password_is_ok and confirmed_pwd_is_ok and email_is_ok:
+    if user_name_is_ok and password_is_ok and password_is_confirmed and email_is_ok:
         email_is_new = _check_email_in_db(email)
         if email_is_new:
             account_service.registrate(user_name, email, password)
-            flash("Your registration was successful!", _SUCCESS)
+            flash(_SUCCESSFUL_REG, _SUCCESS)
             return redirect(_INDEX_PAGE_URL)
     return redirect(_REGISTRATION_PAGE_URL + "/" + str(user_name) + "/" + str(email))
 

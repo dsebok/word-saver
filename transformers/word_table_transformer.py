@@ -31,6 +31,7 @@ def transform_word_table_to_db_list(word_table):
 
 
 def _convert_to_word_list(text):
+    text = text.lower()
     text = re.sub(r"[':()?!,.]", " ", text)
     text = re.sub(r"[-]", "", text)
     return text.split()
