@@ -19,6 +19,14 @@ _SAVING_HTML = "saving.html"
 _WORD_COUNTING_HTML = "word-counting.html"
 _WORD_TABLE_HTML = "word-table.html"
 
+_ERROR = "error"
+_SUCCESS = "success"
+_INVALID_USERNAME = "Error: the username is invalid. Check the conditions!"
+_INVALID_PASSWORD = "Error: the password is invalid. Check the conditions!"
+_INVALID_EMAIL = "Error: the email is invalid. Use a valid e-mail address!"
+_EXISTING_EMAIL = "Error: this e-mail address is already in use. Choose an other!"
+_MISMATCHING_PASSWORD = "Error: the password and the confirmed password are not the same!"
+
 app = Flask(__name__)
 app.secret_key = "qfV0ekN^e&r8!7PR"
 
@@ -48,7 +56,7 @@ def registrate():
         email_is_new = _check_email_in_db(email)
         if email_is_new:
             account_service.registrate(user_name, email, password)
-            flash("Your registration was successful!", "success")
+            flash("Your registration was successful!", _SUCCESS)
             return redirect(_INDEX_PAGE_URL)
     return redirect(_REGISTRATION_PAGE_URL + "/" + str(user_name) + "/" + str(email))
 
@@ -67,11 +75,11 @@ def save_words():
         text = request.form["text"]
         if word_service.text_has_invalid_characters(text):
             session["text"] = text
-            flash("Error: text had invalid characters!", "error")
+            flash("Error: text had invalid characters!", _ERROR)
             return redirect(_WORD_SAVING_PAGE_URL)
         word_service.save_text(text)
         session["text"] = ""
-        flash("The words of the text has been saved successfully!", "success")
+        flash("The words of the text has been saved successfully!", _SUCCESS)
         return redirect(_WORD_SAVING_PAGE_URL)
     return redirect(_INDEX_PAGE_URL)
 
@@ -117,10 +125,10 @@ def authenticate():
     account = account_service.find_matching_credentials(email, password)
     if account:
         _fill_session_data(account)
-        flash("You were successfully logged in", "success")
+        flash("You were successfully logged in", _SUCCESS)
         return redirect(_WORD_SAVING_PAGE_URL)
     else:
-        flash("Email address or Password is incorrect!", "error")
+        flash("Email address or Password is incorrect!", _ERROR)
         return redirect(_INDEX_PAGE_URL)
 
 
@@ -140,54 +148,46 @@ def _fill_session_data(account):
 def _check_for_empty(word):
     if word == "":
         session["text"] = ""
-        flash("Error: the input is empty!", "error")
+        flash("Error: the input is empty!", _ERROR)
         return redirect(_WORD_COUNTING_PAGE_URL)
 
 
 def _check_for_invalid_input(word):
     if word_service.word_has_invalid_characters(word):
         session["text"] = word
-        flash("Error: text had invalid characters!", "error")
+        flash("Error: text had invalid characters!", _ERROR)
         return redirect(_WORD_COUNTING_PAGE_URL)
 
 
 def _check_reg_user_name(user_name):
-    accepted = word_service.check_user_name(user_name)
-    if not accepted:
-        flash("Error: the username is invalid. Check the conditions!", "error")
-        return False
-    return True
+    return _check_input(word_service.check_user_name, _INVALID_USERNAME, user_name)
 
 
 def _check_reg_password(password):
-    accepted = word_service.check_password(password)
-    if not accepted:
-        flash("Error: the password is invalid. Check the conditions!", "error")
-        return False
-    return True
-
-
-def _check_confirmed_pwd(password, confirmed_pwd):
-    if password != confirmed_pwd:
-        flash("Error: the password and the confirmed password are not the same!", "error")
-        return False
-    return True
+    return _check_input(word_service.check_password, _INVALID_PASSWORD, password)
 
 
 def _check_reg_email(email):
-    accepted = word_service.check_email(email)
-    if not accepted:
-        flash("Error: the email is invalid. Use a valid e-mail address!", "error")
-        return False
-    return True
+    return _check_input(word_service.check_email, _INVALID_EMAIL, email)
 
 
 def _check_email_in_db(email):
-    accepted = word_service.check_email_in_db(email)
+    return _check_input(word_service.check_email_in_db, _EXISTING_EMAIL, email)
+
+
+def _check_confirmed_pwd(password, confirmed_pwd):
+    return _check_input(word_service.confirm_password, _MISMATCHING_PASSWORD, password, confirmed_pwd)
+
+
+def _check_input(checker, message, *args):
+    accepted = False
+    if len(args) == 1:
+        accepted = checker(args[0])
+    elif len(args) == 2:
+        accepted = checker(args[0], args[1])
     if not accepted:
-        flash("Error: this e-mail address is already in use. Choose an other!", "error")
-        return False
-    return True
+        flash(message, _ERROR)
+    return accepted
 
 
 if __name__ == "__main__":

@@ -66,6 +66,10 @@ def check_password(password):
     return False
 
 
+def confirm_password(password, confirmed_pwd):
+    return password == confirmed_pwd
+    
+
 def check_email(email):
     return bool(re.match(_GENERAL_EMAIL_REGEX, email))
 

@@ -415,6 +415,33 @@ class WordServiceTest(unittest.TestCase):
         self.assertFalse(result_denied_2)
         self.assertFalse(result_denied_3)
 
+    def test_confirm_password_accepts_matching_strings(self):
+        # GIVEN
+        pwd = "testMEl1keH3||"
+        confirmed_pwd = "testMEl1keH3||"
+        # WHEN
+        result = word_service.confirm_password(pwd, confirmed_pwd)
+        # THEN
+        self.assertTrue(result)
+
+    def test_confirm_password_denies_mismatching_strings(self):
+        # GIVEN
+        pwd = "testMEl1keH3||"
+        confirmed_pwd = "testME25%"
+        # WHEN
+        result = word_service.confirm_password(pwd, confirmed_pwd)
+        # THEN
+        self.assertFalse(result)
+
+    def test_confirm_password_is_case_sensitive(self):
+        # GIVEN
+        pwd = "testMEl1keH3||"
+        confirmed_pwd = "TestMEl1keH3||"
+        # WHEN
+        result = word_service.confirm_password(pwd, confirmed_pwd)
+        # THEN
+        self.assertFalse(result)
+
 
 def main():
     unittest.main()
