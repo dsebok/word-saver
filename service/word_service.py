@@ -71,6 +71,9 @@ def check_email(email):
 
 
 def check_email_in_db(email):
+    user_found = mysql_dao.get_user_info(email)
+    if user_found:
+        return False
     return True
 
 

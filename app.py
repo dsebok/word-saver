@@ -50,8 +50,7 @@ def registrate():
             account_service.registrate(user_name, email, password)
             flash("Your registration was successful!", "success")
             return redirect(_INDEX_PAGE_URL)
-    else:
-        return redirect(_REGISTRATION_PAGE_URL + "/" + str(user_name) + "/" + str(email))
+    return redirect(_REGISTRATION_PAGE_URL + "/" + str(user_name) + "/" + str(email))
 
 
 @app.route(_WORD_SAVING_PAGE_URL)
