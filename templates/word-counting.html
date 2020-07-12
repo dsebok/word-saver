@@ -7,7 +7,7 @@
         <h4>Check how many times your word is contained in the database</h4>
         <fieldset>
             <div class="card-header">Count</div>
-            <input type="text" name="word" id="word" placeholder="Type your word here" value="{{ text }}" required>
+            <input type="text" name="word" id="word" placeholder="Type your word here" value="{{ word_to_count }}" required>
             <p class="remark">*Only one word is allowed (you may use digits but no punctuations)</p>
             <table>
                 <tr>
@@ -23,7 +23,7 @@
                         <label>Word count:</label>
                     </td>
                     <td>
-                        <label>{{ word_count }}</label>
+                        <label>{{ quantity }}</label>
                     </td>
                 </tr>
             </table>

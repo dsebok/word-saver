@@ -67,7 +67,7 @@ def registrate():
 def saving_page():
     if "logged_in" in session:
         return render_template(
-            _SAVING_HTML, user_name=session["user_name"], text=session["text"])
+            _SAVING_HTML, user_name=session["user_name"], text_to_save=session["text_to_save"])
     return redirect(_INDEX_PAGE_URL)
 
 
@@ -76,11 +76,11 @@ def save_words():
     if "logged_in" in session:
         text = request.form["text"]
         if word_service.text_has_invalid_characters(text):
-            session["text"] = text
+            session["text_to_save"] = text
             flash("Error: text had invalid characters!", _ERROR)
             return redirect(_WORD_SAVING_PAGE_URL)
         word_service.save_text(text)
-        session["text"] = ""
+        session["text_to_save"] = ""
         flash("The words of the text has been saved successfully!", _SUCCESS)
         return redirect(_WORD_SAVING_PAGE_URL)
     return redirect(_INDEX_PAGE_URL)
@@ -91,7 +91,7 @@ def save_words():
 def word_counting_page(word, quantity):
     if "logged_in" in session:
         return render_template(
-            _WORD_COUNTING_HTML, user_name=session["user_name"], prev_word=word, word_count=quantity, text=session["text"])
+            _WORD_COUNTING_HTML, user_name=session["user_name"], prev_word=word, quantity=quantity, word_to_count=session["word_to_count"])
     return redirect(_INDEX_PAGE_URL)
 
 
@@ -103,7 +103,7 @@ def count_word():
         if error is None:
             error = _check_for_invalid_input(word)
         if error is None:
-            session["text"] = ""
+            session["word_to_count"] = ""
             quantity = word_service.get_word_count(word)
             return redirect(
                 _WORD_COUNTING_PAGE_URL + "/" + str(word) + "/" + str(quantity))
@@ -144,19 +144,20 @@ def _fill_session_data(account):
     session["logged_in"] = True
     session["id"] = account[0]
     session["user_name"] = account[1]
-    session["text"] = ""
+    session["text_to_save"] = ""
+    session["word_to_count"] = ""
 
 
 def _check_for_empty(word):
     if word == "":
-        session["text"] = ""
+        session["word_to_count"] = ""
         flash("Error: the input is empty!", _ERROR)
         return redirect(_WORD_COUNTING_PAGE_URL)
 
 
 def _check_for_invalid_input(word):
     if word_service.word_has_invalid_characters(word):
-        session["text"] = word
+        session["word_to_count"] = word
         flash("Error: text had invalid characters!", _ERROR)
         return redirect(_WORD_COUNTING_PAGE_URL)
 
