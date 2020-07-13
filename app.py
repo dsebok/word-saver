@@ -39,7 +39,7 @@ def index():
 
 
 @app.route(_REGISTRATION_PAGE_URL, defaults={"user_name": "", "email": ""})
-@app.route(_REGISTRATION_PAGE_URL + "/<user_name>/<email>")
+@app.route(_REGISTRATION_PAGE_URL + "/<path:user_name>/<path:email>")
 def registration_page(user_name, email):
     return render_template(_REGISTRATION_HTML, user_name=user_name, email=email)
 
@@ -64,7 +64,7 @@ def registrate():
 
 
 @app.route(_WORD_SAVING_PAGE_URL, defaults={"text": ""})
-@app.route(_WORD_SAVING_PAGE_URL + "/<text>")
+@app.route(_WORD_SAVING_PAGE_URL + "/<path:text>")
 def saving_page(text):
     if "logged_in" in session:
         return render_template(
@@ -86,8 +86,8 @@ def save_words():
 
 
 @app.route(_WORD_COUNTING_PAGE_URL, defaults={"word": "", "quantity": "", "text": ""})
-@app.route(_WORD_COUNTING_PAGE_URL + "/<text>", defaults={"word": "", "quantity": ""})
-@app.route(_WORD_COUNTING_PAGE_URL + "/<word>/<quantity>", defaults={"text": ""})
+@app.route(_WORD_COUNTING_PAGE_URL + "/<path:text>", defaults={"word": "", "quantity": ""})
+@app.route(_WORD_COUNTING_PAGE_URL + "/<path:word>/<path:quantity>", defaults={"text": ""})
 def word_counting_page(word, quantity, text):
     if "logged_in" in session:
         return render_template(
