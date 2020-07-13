@@ -63,11 +63,12 @@ def registrate():
     return redirect(_REGISTRATION_PAGE_URL + "/" + str(user_name) + "/" + str(email))
 
 
-@app.route(_WORD_SAVING_PAGE_URL)
-def saving_page():
+@app.route(_WORD_SAVING_PAGE_URL, defaults={"text": ""})
+@app.route(_WORD_SAVING_PAGE_URL + "/<text>")
+def saving_page(text):
     if "logged_in" in session:
         return render_template(
-            _SAVING_HTML, user_name=session["user_name"], text_to_save=session["text_to_save"])
+            _SAVING_HTML, user_name=session["user_name"], text_to_save=text)
     return redirect(_INDEX_PAGE_URL)
 
 
@@ -76,22 +77,21 @@ def save_words():
     if "logged_in" in session:
         text = request.form["text"]
         if word_service.text_has_invalid_characters(text):
-            session["text_to_save"] = text
             flash("Error: text had invalid characters!", _ERROR)
-            return redirect(_WORD_SAVING_PAGE_URL)
+            return redirect(_WORD_SAVING_PAGE_URL + "/" + str(text))
         word_service.save_text(text)
-        session["text_to_save"] = ""
         flash("The words of the text has been saved successfully!", _SUCCESS)
         return redirect(_WORD_SAVING_PAGE_URL)
     return redirect(_INDEX_PAGE_URL)
 
 
-@app.route(_WORD_COUNTING_PAGE_URL, defaults={"word": "", "quantity": ""})
-@app.route(_WORD_COUNTING_PAGE_URL + "/<word>/<quantity>")
-def word_counting_page(word, quantity):
+@app.route(_WORD_COUNTING_PAGE_URL, defaults={"word": "", "quantity": "", "text": ""})
+@app.route(_WORD_COUNTING_PAGE_URL + "/<text>", defaults={"word": "", "quantity": ""})
+@app.route(_WORD_COUNTING_PAGE_URL + "/<word>/<quantity>", defaults={"text": ""})
+def word_counting_page(word, quantity, text):
     if "logged_in" in session:
         return render_template(
-            _WORD_COUNTING_HTML, user_name=session["user_name"], prev_word=word, quantity=quantity, word_to_count=session["word_to_count"])
+            _WORD_COUNTING_HTML, user_name=session["user_name"], prev_word=word, quantity=quantity, word_to_count=text)
     return redirect(_INDEX_PAGE_URL)
 
 
@@ -103,7 +103,6 @@ def count_word():
         if error is None:
             error = _check_for_invalid_input(word)
         if error is None:
-            session["word_to_count"] = ""
             quantity = word_service.get_word_count(word)
             return redirect(
                 _WORD_COUNTING_PAGE_URL + "/" + str(word) + "/" + str(quantity))
@@ -144,22 +143,18 @@ def _fill_session_data(account):
     session["logged_in"] = True
     session["id"] = account[0]
     session["user_name"] = account[1]
-    session["text_to_save"] = ""
-    session["word_to_count"] = ""
 
 
 def _check_for_empty(word):
     if word == "":
-        session["word_to_count"] = ""
         flash("Error: the input is empty!", _ERROR)
         return redirect(_WORD_COUNTING_PAGE_URL)
 
 
 def _check_for_invalid_input(word):
     if word_service.word_has_invalid_characters(word):
-        session["word_to_count"] = word
         flash("Error: text had invalid characters!", _ERROR)
-        return redirect(_WORD_COUNTING_PAGE_URL)
+        return redirect(_WORD_COUNTING_PAGE_URL + "/" + str(word))
 
 
 def _check_reg_user_name(user_name):
@@ -199,4 +194,4 @@ def setup_app(app):
 setup_app(app)
 
 if __name__ == "__main__":
-    app.run(port=5000)
+    app.run(debug=True, port=5000)
