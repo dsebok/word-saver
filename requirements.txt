@@ -16,5 +16,5 @@ PyMySQL==0.9.3
 six==1.15.0
 toml==0.10.1
 typed-ast==1.4.1
-Werkzeug==2.2.3
+Werkzeug==3.0.1
 wrapt==1.12.1
